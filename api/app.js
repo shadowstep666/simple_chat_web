@@ -1,13 +1,21 @@
+var mongoose = require('mongoose');
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require("cors");
-
 var api = require('./routes/api');
 
 var app = express();
+
+require('dotenv').config();
+
+mongoose.connect(process.env.DATABASE_URL).then(() => {
+  console.log('Database connected!');
+}).catch(err => {
+  console.log('Failed to connect to database!');
+});
 
 app.use(cors());
 app.use(logger('dev'));
