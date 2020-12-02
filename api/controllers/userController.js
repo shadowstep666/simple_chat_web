@@ -172,3 +172,33 @@ exports.getProfile = async (req, res) => {
         console.log(error);
     }
 }
+
+exports.getListUser = async (req, res) => {
+    try {
+        let users = await User.find({ _id: { $ne: req.user._id }});
+        return res.json({
+            status: 1,
+            users: users,
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.getUserDetail = async (req, res) => {
+    try {
+        let id = req.params.id;
+        const user = await User.findById(id);
+        if (user) {
+            return res.json({
+                status: 1,
+                user: user,
+            });
+        }
+        return res.json({
+            status: 0,
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
