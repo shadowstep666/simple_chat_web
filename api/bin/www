@@ -8,13 +8,18 @@ var app = require('../app');
 var debug = require('debug')('api:server');
 var http = require('http');
 var socketio =  require('socket.io');
+var jwt = require('jsonwebtoken');
+var Message = require('../models/message');
+
+require('dotenv').config();
+
+const { access } = require('fs');
 
 /**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(process.env.PORT || '8080');
-var io = socketio(server);
 app.set('port', port);
 
 /**
@@ -23,12 +28,33 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+var io = socketio(server, {
+  cors: {
+    origin: process.env.CLIENT_URL,
+    methods: ["GET", "POST"],
+  }
+});
 io.on('connection', (socket) => {
   console.log('New connection!');
 
+  socket.on('online', (data) => {
+    jwt.verify(data.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+      if (user) {
+        socket.broadcast.emit('user-online', { id: user._id });
+      }
+    })
+  });
+
+  socket.on('message', async (data) => {
+    console.log(data);
+    let message = new Message(data.message);
+    await message.save();
+    io.sockets.emit('new-message', {message: data.message});
+  })
+
   socket.on('disconnect', () => {
     console.log('User left!');
-  })
+  });
 })
 
 /**
