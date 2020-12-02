@@ -5,6 +5,7 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 
 var userController = require('../controllers/userController');
+var messageController = require('../controllers/messageController');
 
 function authToken(req, res, next) {
     const accessToken = req.headers['accesstoken'] || req.query.accessToken;
@@ -33,5 +34,11 @@ router.post('/register', userController.register);
 router.post('/token', userController.refreshToken);
 
 router.post('/logout', userController.logout);
+
+router.get('/users', authToken, userController.getListUser);
+
+router.get('/users/:id', authToken, userController.getUserDetail);
+
+router.get('/messages/:id', authToken, messageController.getMessages);
 
 module.exports = router;
