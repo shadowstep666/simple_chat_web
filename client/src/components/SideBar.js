@@ -1,8 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useAuth } from '../custom/auth';
+import { useTab } from '../custom/tab';
 
 function SideBar(props) {
-    const { setAuthToken } = useAuth()
+    const { setAuthToken } = useAuth();
+    var currentTab = useTab();
 
     const logout = useCallback(async(e) => {
         e.preventDefault();
@@ -25,17 +27,14 @@ function SideBar(props) {
             <div className="flex-lg-column my-auto">
             <ul className="nav nav-pills side-menu-nav justify-content-center" role="tablist">
                 <li className="nav-item" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Profile">
-                    <a className="nav-link" id="pills-user-tab" data-toggle="pill" href="#pills-user" role="tab">
+                    <a className={currentTab === 'Profile' ? "nav-link active" : "nav-link"}
+                        id="pills-user-tab" data-toggle="pill" href="#pills-user" role="tab">
                         <i className="ri-user-2-line" />
                     </a>
                 </li>
-                <li className="nav-item" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Chats">
-                    <a className="nav-link active" id="pills-chat-tab" data-toggle="pill" href="#pills-chat" role="tab">
-                        <i className="ri-message-3-line" />
-                    </a>
-                </li>
                 <li className="nav-item" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="Contacts">
-                    <a className="nav-link" id="pills-contacts-tab" data-toggle="pill" href="#pills-contacts" role="tab">
+                    <a className={currentTab === 'Contacts' ? "nav-link active" : "nav-link"} 
+                        id="pills-contacts-tab" data-toggle="pill" href="#pills-contacts" role="tab">
                         <i className="ri-contacts-line"></i>
                     </a>
                 </li>
